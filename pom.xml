@@ -10,15 +10,16 @@
     <packaging>pom</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <demo.build.sourceEncoding>UTF-8</demo.build.sourceEncoding>
+        <demo.reporting.outputEncoding>UTF-8</demo.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
 
 
     <modules>
-        <module>discovery-microservice</module>
-        <module>user-microservice</module>
+        <module>discovery</module>
+        <module>user</module>
+        <module>testrecord</module>
         <!--<module>api-gateway-microservice</module>-->
         <!--<module>recommendation-microservice</module>-->
         <!--<module>config-microservice</module>-->
@@ -50,6 +51,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
