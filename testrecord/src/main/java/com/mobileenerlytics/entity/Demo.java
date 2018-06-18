@@ -1,19 +1,30 @@
 package com.mobileenerlytics.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Demo {
     @Id
-    public String id;
+    public ObjectId id;
 
     public String firstName;
     public String lastName;
 
+    public List<ObjectId> projects = new ArrayList<>();
+
     public Demo() {}
+
 
     public Demo(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public void addProject(ObjectId projectId) {
+        this.projects.add(projectId);
     }
 
     @Override
@@ -23,4 +34,7 @@ public class Demo {
                 id, firstName, lastName);
     }
 
+    public ObjectId getId() {
+        return id;
+    }
 }

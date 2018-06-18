@@ -44,6 +44,6 @@ public class ProjectController {
 //    }
 
     private void validateUser(String name) {
-        this.customerRepository.findByFirstName(name);
+//        this.customerRepository.findByFirstName(name);
     }
 }

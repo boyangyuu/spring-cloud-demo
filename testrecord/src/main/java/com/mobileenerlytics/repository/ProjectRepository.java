@@ -1,13 +1,15 @@
 package com.mobileenerlytics.repository;
 
-import com.mobileenerlytics.entity.Demo;
+import com.mobileenerlytics.entity.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.List;
 
-public interface ProjectRepository extends MongoRepository<Demo, String> {
 
-    public Demo findByFirstName(String firstName);
-
-    public List<Demo> findByLastName(String lastName);
+//todo add testing  https://github.com/spring-guides/gs-accessing-data-mongodb/blob/master/complete/src/test/java/hello/CustomerRepositoryTests.java
+public interface ProjectRepository extends MongoRepository<Project, String> {
+//   @Autowired
+//   MongoOperations mongoOperations; https://stackoverflow.com/questions/23657661/spring-data-mongodb-no-property-get-found-for-type-at-org-springframework-data-m
+   Project findProjectBy(String name, String userId);
+//   Project find(ObjectId id);
 }
