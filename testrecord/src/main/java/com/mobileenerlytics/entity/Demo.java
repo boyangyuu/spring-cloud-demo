@@ -13,7 +13,7 @@ public class Demo {
     public String firstName;
     public String lastName;
 
-    public List<ObjectId> projects = new ArrayList<>();
+    public List<String> projects = new ArrayList<>();
 
     public Demo() {}
 
@@ -23,7 +23,7 @@ public class Demo {
         this.lastName = lastName;
     }
 
-    public void addProject(ObjectId projectId) {
+    public void addProject(String projectId) {
         this.projects.add(projectId);
     }
 
