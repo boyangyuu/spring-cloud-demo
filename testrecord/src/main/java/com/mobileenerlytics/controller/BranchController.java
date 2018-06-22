@@ -52,7 +52,7 @@ public class BranchController {
         } catch (Exception e) {
             e.printStackTrace();
             //todo
-//            throw new NotFoundException(Response
+//            throw new NotFoundEntityException(Response
 //                    .status(Response.Status.NOT_FOUND)
 //                    .entity(MSG_BRANCH_NOT_FOUND)
 //                    .build());

@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +37,7 @@ public class CommitController {
     private RestTemplate restTemplate;
 
     @GetMapping
-    public List<Document> getCommits(
+    public ResponseEntity getCommits(
             @RequestParam(required=true, name="count") int count,
             @RequestParam(name="branchName") String branchName,
             @RequestParam(name="middleUpdatedMS") long middleUpdatedMS,
@@ -76,8 +77,8 @@ public class CommitController {
                 }
             });
         }
-
-        return result;
+        if (result == null || result.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(result);
     }
 
 
@@ -98,7 +99,7 @@ public class CommitController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public Document deleteCommitById(@PathVariable("id") String id
+    public ResponseEntity deleteCommitById(@PathVariable("id") String id
             , @RequestParam(required=true, name="projectId") String projectId)
     {
         MongoCollection<Document> collection = mongoDatabase.getCollection("Commit");
@@ -128,15 +129,13 @@ public class CommitController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
-//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-//                    .entity("Commit deleted Failed!!").build();
+            return ResponseEntity.badRequest().build();
         }
 
         if (oneAndDelete == null)
-            return null;
+            return ResponseEntity.noContent().build();
         else
-            return oneAndDelete;
+            return ResponseEntity.ok(oneAndDelete);
 
     }
 
