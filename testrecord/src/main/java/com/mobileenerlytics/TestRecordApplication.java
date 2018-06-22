@@ -33,9 +33,6 @@ public class TestRecordApplication implements CommandLineRunner {
     @Autowired
     private TestRecordRepository testRecordRepository;
 
-    @Autowired
-    private DemoRepository demoRepository;
-
 
     public static void main(String[] args) {
         SpringApplication.run(TestRecordApplication.class, args);
@@ -55,20 +52,20 @@ public class TestRecordApplication implements CommandLineRunner {
         String hash = "1:$pandora";
         String desc = "desc";
 
-        String testName = "testName";
-//        demoRepository.deleteAll();
-//        projectRepository.deleteAll();
+        String testName = "testName11";
+        branchRepository.deleteAll();
+        testRecordRepository.deleteAll();
+        commitRepository.deleteAll();
+        projectRepository.deleteAll();
 
         // project
         Project project = projectRepository.findBy(projectName, userId);
         System.out.println(project);
-        if (project == null) projectRepository.save(new Project(projectName, userId));
+        if (project == null) project = projectRepository.save(new Project(projectName, userId));
 
         // branch
         Branch branch = branchRepository.findBy(branchName, project.getId());
-        if (branch == null)
-            branch = branchRepository.save(new Branch(branchName, project.getId()));
-
+        if (branch == null) branch = branchRepository.save(new Branch(branchName, project.getId()));
 
         // contributor
         Contributor contributor = contributorRepository.findBy(authorEmail, authorName);
