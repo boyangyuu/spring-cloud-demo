@@ -1,49 +1,70 @@
 package com.mobileenerlytics.controller;
 
+import com.mobileenerlytics.entity.Project;
 import com.mobileenerlytics.repository.ProjectRepository;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-@RestController
-@RequestMapping("/{userId}/bookmarks")
-public class ProjectController {
+import java.util.List;
+import java.util.function.Supplier;
 
-    private final ProjectRepository customerRepository;
+@RestController
+@RequestMapping("api/project")
+// todo https://spring.io/guides/gs/rest-service/
+public class ProjectController {
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
-    ProjectController(ProjectRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private MongoDatabase mongoDatabase; // ?
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate; // consume other api.
 
-//    @PostMapping
-//    ResponseEntity<?> add(@PathVariable String id, @RequestBody Demo input) {
-//        this.validateUser(id);
-//
-//        return this.customerRepository
-//                .findById(id)
-//                .map(customer -> {
-//                    Bookmark result = bookmarkRepository.save(new Bookmark(customer,
-//                            input.getUri(), input.getDescription()));
-//
-//                    URI location = ServletUriComponentsBuilder
-//                            .fromCurrentRequest().path("/{id}")
-//                            .buildAndExpand(result.getId()).toUri();
-//
-//                    return ResponseEntity.created(location).build();
-//                })
-//                .orElse(ResponseEntity.noContent().build());
-//
-//    }
+    @GetMapping
+    public ResponseEntity getProjects(@RequestHeader HttpHeaders headers) {
+//        List<String> username = headers.get("username");
+        String userName = "Allmusicapps_3Mins1";
+        List<Project> projects = projectRepository.findBy(userName);
+        if (projects == null || projects.isEmpty()) return ResponseEntity.noContent().build();
+        else return ResponseEntity.ok(projects);
 
-    private void validateUser(String name) {
-//        this.customerRepository.findByFirstName(name);
     }
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity getProject(@PathVariable String id) {
+        Project project = projectRepository.findById(id).get();
+        if (project == null) return ResponseEntity.notFound().build();
+        else return ResponseEntity.ok(project);
+    }
+
+    @PutMapping(value="/{projectId}/{attribute}")
+    public ResponseEntity updateProject(@PathVariable String projectId,
+                                  @PathVariable String attribute,
+                                  @RequestParam(required=true, name="value") String value
+                                  ) {
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Project");
+        Document filter = new Document("_id", new ObjectId(projectId)).append(attribute, new Document("$exists", true));
+        Document oneAndUpdate = collection.findOneAndUpdate(
+                    filter,
+                    new Document("$set", new Document(attribute, value)),
+                new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
+        );
+        if (oneAndUpdate == null) return ResponseEntity.badRequest().build();
+        else return ResponseEntity.ok(oneAndUpdate);
+    }
+
 }

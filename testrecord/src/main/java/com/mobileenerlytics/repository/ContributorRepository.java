@@ -1,6 +1,5 @@
 package com.mobileenerlytics.repository;
 
-import com.mobileenerlytics.entity.Branch;
 import com.mobileenerlytics.entity.Contributor;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
