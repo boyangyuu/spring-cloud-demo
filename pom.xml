@@ -27,6 +27,7 @@
         <module>discovery</module>
         <module>user</module>
         <module>testrecord</module>
+        <!--<module>gateway</module>-->
         <!--<module>api-gateway-microservice</module>-->
         <!--<module>recommendation-microservice</module>-->
         <!--<module>config-microservice</module>-->

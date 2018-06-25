@@ -80,8 +80,6 @@ public class BranchController {
         return getBranches(projectId, query, numOfCommits);
     }
 
-
-
     List<Document> getBranches(String projectId, Bson query, int numOfCommits) {
         final List<Document> branches = new ArrayList<>();
 

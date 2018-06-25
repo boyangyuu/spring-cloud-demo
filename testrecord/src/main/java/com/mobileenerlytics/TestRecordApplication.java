@@ -79,7 +79,7 @@ public class TestRecordApplication implements CommandLineRunner {
             branchRepository.save(branch);
 //            commit.setJobStatus(Constants.COMMIT_STATUS_QUEUED);
         }
-
+        // input log, output record, mark commit as done
         // testRecords todo , call post processing, get a testrecord
         TestRecord record = testRecordRepository.findBy(testName, commit.getId());
         if (record != null) throw new RuntimeException("testrecord is already exist" + "testName: " + testName + "commit of " + commit.getId());
