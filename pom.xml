@@ -20,6 +20,7 @@
         <demo.build.sourceEncoding>UTF-8</demo.build.sourceEncoding>
         <demo.reporting.outputEncoding>UTF-8</demo.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <docker.plugin.version>0.4.13</docker.plugin.version>
         <docker.image.prefix>springcloud</docker.image.prefix>
     </properties>
 
@@ -101,26 +102,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.2.3</version>
-                <configuration>
-                    <baseImage>openjdk:7-jre-alpine</baseImage>
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <exposes>8761</exposes>
-                    <entryPoint>["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
         </plugins>
     </build>
