@@ -3,14 +3,17 @@
 
   eureka:
     instance:
-      prefer-ip-address: true
+      preferIpAddress: true
     client:
       serviceUrl:
-        defaultZone: http://localhost:8761/eureka/
+        defaultZone: http://discovery:8761/eureka/
+
+  ribbon:
+    eureka:
+      enabled: true
 
 
   spring:
-
     application:
       name: microservice-provider-testrecord
     data:

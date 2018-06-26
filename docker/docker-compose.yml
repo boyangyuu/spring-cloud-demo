@@ -1,16 +1,14 @@
 discovery:
   image: springcloud/discovery
   ports:
-   - "8761:8761"
-user:
-  image: springcloud/user
-  links:
-   - discovery
-  ports:
-  - "10000:10000"
+    - "8761:8761"
+  environment:
+    - "SPRING_PROFILES_ACTIVE=dev"
 testrecord:
   image: springcloud/testrecord
-  links:
-   - discovery
   ports:
-  - "10001:10001"
+    - "9000:9000"
+  links:
+    - discovery
+  environment:
+    - "SPRING_PROFILES_ACTIVE=dev"
