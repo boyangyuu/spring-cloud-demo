@@ -38,10 +38,10 @@ public class CommitController {
 
     @GetMapping
     public ResponseEntity getCommits(
-            @RequestParam(required=true, name="count") int count,
-            @RequestParam(name="branchName") String branchName,
-            @RequestParam(name="middleUpdatedMS") long middleUpdatedMS,
-            @RequestParam(required=true, name="projectId") String projectId) throws Exception {
+            @RequestParam(name="count") int count,
+            @RequestParam(required=false, name="branchName") String branchName,
+            @RequestParam(required=false, name="middleUpdatedMS") long middleUpdatedMS,
+            @RequestParam(name="projectId") String projectId) throws Exception {
         final List<Document> result = new ArrayList<>();
         Document query = new Document();
         if (branchName != null) query.append("branchName", branchName);
@@ -100,7 +100,7 @@ public class CommitController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteCommitById(@PathVariable("id") String id
-            , @RequestParam(required=true, name="projectId") String projectId)
+            , @RequestParam(name="projectId") String projectId)
     {
         MongoCollection<Document> collection = mongoDatabase.getCollection("Commit");
         MongoCollection<Document> testRecordCollection = mongoDatabase.getCollection("TestRecord");

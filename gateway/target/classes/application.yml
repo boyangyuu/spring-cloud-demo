@@ -1,14 +1,37 @@
+#https://cloud.spring.io/spring-cloud-static/Dalston.SR5/multi/multi__router_and_filter_zuul.html
 server:
-  port: 8761
+  port: 8000
+
+spring:
+  application:
+    name: microservice-gateway-zuul
 
 eureka:
-  instance:
-    hostname: discovery
   client:
-    registerWithEureka: false
-    fetchRegistry: false
     serviceUrl:
-      defaultZone: http://localhost:${server.port}/eureka/
-#    zone:  discovery?
+      defaultZone: http://localhost:8761/eureka/
+zuul:
+  ignoredServices: "*"
+  routes:
+    project:
+      path: /api/project/**
+      serviceId: microservice-provider-testrecord
+      stripPrefix: false
+    branch:
+      path: /api/branch/**
+      serviceId: microservice-provider-testrecord
+      stripPrefix: false
+    commit:
+      path: /api/commit/**
+      serviceId: microservice-provider-testrecord
+      stripPrefix: false
 
-#spring.cloud.config.discovery.enabled: true
+#      url: http://localhost:9000
+#ribbon:
+#  eureka:
+#    enabled: true
+
+
+#
+
+#

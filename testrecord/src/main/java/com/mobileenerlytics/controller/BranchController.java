@@ -38,7 +38,7 @@ public class BranchController {
             @RequestParam(required=false, name="prefix") String prefix,
             @RequestParam(required=false, name="branchName") String branchName,
             @RequestParam(required=false, name="count") int count,
-            @RequestParam(required=true, name="projectId") String projectId) {
+            @RequestParam(name="projectId") String projectId) {
         //todo
 //        if (projectId == null) throw new RuntimeException(Response
 //                .status(Response.Status.FORBIDDEN)

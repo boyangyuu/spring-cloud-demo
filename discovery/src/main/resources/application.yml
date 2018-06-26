@@ -2,13 +2,17 @@ server:
   port: 8761
 
 eureka:
-  instance:
-    hostname: discovery
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://localhost:${server.port}/eureka/
 #    zone:  discovery?
+
+logging:
+  level:
+    com.netflix.eureka: OFF
+    com.netflix.discovery: OFF
+
 
 #spring.cloud.config.discovery.enabled: true
