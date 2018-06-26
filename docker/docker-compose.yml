@@ -1,11 +1,11 @@
 discovery:
-  image: springcloud/discovery
+  image: mobileenerlytics/spring-discovery
   ports:
     - "8761:8761"
   environment:
     - "SPRING_PROFILES_ACTIVE=dev"
 testrecord:
-  image: springcloud/testrecord
+  image: mobileenerlytics/spring-testrecord
   ports:
     - "9000:9000"
   links:
