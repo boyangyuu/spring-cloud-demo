@@ -37,7 +37,7 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity getProjects(@RequestHeader HttpHeaders headers) {
 //        List<String> username = headers.get("username");
-        String userName = "Allmusicapps_3Mins1";
+        String userName = "Allmusicapps_3Mins";
         List<Project> projects = projectRepository.findBy(userName);
         if (projects == null || projects.isEmpty()) return ResponseEntity.noContent().build();
         else return ResponseEntity.ok(projects);
@@ -54,7 +54,7 @@ public class ProjectController {
     @PutMapping(value="/{projectId}/{attribute}")
     public ResponseEntity updateProject(@PathVariable String projectId,
                                   @PathVariable String attribute,
-                                  @RequestParam(required=true, name="value") String value
+                                  @RequestParam(name="value") String value
                                   ) {
         MongoCollection<Document> collection = mongoDatabase.getCollection("Project");
         Document filter = new Document("_id", new ObjectId(projectId)).append(attribute, new Document("$exists", true));

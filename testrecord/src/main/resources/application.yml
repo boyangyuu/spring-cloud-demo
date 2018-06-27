@@ -22,5 +22,3 @@
         database: beta_db
         password:
         uri: mongodb://localhost
-
-

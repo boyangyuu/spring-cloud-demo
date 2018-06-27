@@ -50,7 +50,6 @@
 
     <!--https://cloud.spring.io/spring-cloud-netflix/-->
     <dependencyManagement>
-
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
