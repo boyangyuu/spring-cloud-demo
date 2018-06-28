@@ -18,7 +18,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+
+        <!--post processing-->
+        <dependency>
+            <groupId>com.mobileenerlytics</groupId>
+            <artifactId>postproc</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
+
 
     <repositories>
         <repository>
@@ -28,6 +36,9 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>libs-release-local</id>
         </repository>
     </repositories>
 </project>

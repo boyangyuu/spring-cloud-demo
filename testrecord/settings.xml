@@ -1,0 +1,14 @@
+<settings>
+  <servers>
+    <server>
+      <id>libs-release-local</id>
+      <username>deployer</username>
+      <password>applerules4608</password>
+    </server>
+    <server>
+      <id>libs-snapshot-local</id>
+      <username>deployer</username>
+      <password>applerules4608</password>
+    </server>
+   </servers>
+</settings>
