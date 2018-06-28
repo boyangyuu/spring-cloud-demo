@@ -2,19 +2,23 @@
     port: 9000
 
   eureka:
+    instance:
+      preferIpAddress: true
     client:
       serviceUrl:
         defaultZone: http://localhost:8761/eureka/
 
+  ribbon:
+    eureka:
+      enabled: true
+
 
   spring:
     application:
-      name: microservice-provider-testrecord
+      name: microservice-provider-t∂∂estrecord
     data:
       mongodb:
         username:
         database: beta_db
         password:
         uri: mongodb://localhost
-
-
