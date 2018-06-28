@@ -9,6 +9,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 public class UserApplication {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);
-        System.out.println("user microservice is running");
+        System.out.println("user micro-service is running");
     }
 }

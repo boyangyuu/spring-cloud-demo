@@ -2,8 +2,6 @@
     port: 9001
 
   eureka:
-    instance:
-      prefer-ip-address: true
     client:
       serviceUrl:
         defaultZone: http://localhost:8761/eureka/
@@ -14,6 +12,3 @@
       name: microservice-provider-user
     data:
       mongodb:
-        host: localhost
-
-

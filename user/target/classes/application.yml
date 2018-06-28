@@ -2,8 +2,6 @@
     port: 9001
 
   eureka:
-    instance:
-      prefer-ip-address: true
     client:
       serviceUrl:
         defaultZone: http://localhost:8761/eureka/
@@ -15,5 +13,11 @@
     data:
       mongodb:
         host: localhost
-
-
+#todo list https://github.com/eugenp/tutorials/tree/master/jjwt
+# 1.
+# JWT:https://stackoverflow.com/questions/42652695/is-it-ok-to-store-user-credentials-in-the-jwt
+# 1. make it work !!! https://auth0.com/docs/quickstart/backend/java-spring-security/01-authorization
+# 2. verify it in zuul, call it , or ...
+#https://auth0.com/blog/implementing-jwt-authentication-on-spring-boot/
+#  https://medium.com/@xoor/jwt-authentication-service-44658409e12c
+#https://github.com/murraco/spring-boot-jwt/blob/master/src/main/java/murraco/controller/UserController.java#L43

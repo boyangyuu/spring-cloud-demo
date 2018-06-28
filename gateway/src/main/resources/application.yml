@@ -13,9 +13,9 @@ eureka:
 zuul:
   ignoredServices: "*"
   routes:
-    project:
-      path: /api/project/**
-      serviceId: microservice-provider-testrecord
+    user:
+      path: /api/user/**
+      serviceId: microservice-provider-user
       stripPrefix: false
     branch:
       path: /api/branch/**
@@ -25,13 +25,14 @@ zuul:
       path: /api/commit/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
+    project:
+      path: /api/project/**
+      serviceId: microservice-provider-testrecord
+      stripPrefix: false
+
+# todo using http://cloud.spring.io/spring-cloud-security/single/spring-cloud-security.html
 
 #      url: http://localhost:9000
 #ribbon:
 #  eureka:
 #    enabled: true
-
-
-#
-
-#
