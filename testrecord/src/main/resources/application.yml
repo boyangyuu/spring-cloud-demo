@@ -15,7 +15,7 @@
 
   spring:
     application:
-      name: microservice-provider-t∂∂estrecord
+      name: microservice-provider-testrecord
     data:
       mongodb:
         username:
