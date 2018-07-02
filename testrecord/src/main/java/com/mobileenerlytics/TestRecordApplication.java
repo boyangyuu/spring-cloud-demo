@@ -3,15 +3,16 @@ package com.mobileenerlytics;
 
 import com.mobileenerlytics.entity.*;
 import com.mobileenerlytics.repository.*;
+import com.mobileenerlytics.util.DBOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @EnableEurekaClient
@@ -32,6 +33,9 @@ public class TestRecordApplication implements CommandLineRunner {
 
     @Autowired
     private TestRecordRepository testRecordRepository;
+
+    @Autowired
+    private DBOperation dbOperation;
 
 
     public static void main(String[] args) {
@@ -90,6 +94,14 @@ public class TestRecordApplication implements CommandLineRunner {
         commitRepository.save(commit);
         branchRepository.save(branch);
 
+        // processing
+        File file = new File("/Users/boyang/Documents/work/spring-cloud-demo/testrecord/src/test/resources/eagle-2479786998251.zip");
+        String pkgName = "com.tencent.qqmusic";
+
+
+        Runnable runnable = dbOperation.getUploadedTraceZipHandler(file, pkgName, "devicename", commit,
+                dbOperation);
+        runnable.run(); // todo is it ok?
 
         // todo call email alerting
 
