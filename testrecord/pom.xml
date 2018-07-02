@@ -25,6 +25,12 @@
             <artifactId>postproc</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.12</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
 
@@ -36,6 +42,10 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>libs-release-local</id>
+            <url>https://mobileenerlytics.jfrog.io/mobileenerlytics/libs-release-local</url>
         </repository>
     </repositories>
 
