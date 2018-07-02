@@ -1,8 +1,25 @@
+  eureka:
+    instance:
+      preferIpAddress: true
+    client:
+      serviceUrl:
+        defaultZone: http://discovery:8761/eureka/
+
+#  spring:
+#    profile: prod
+#    data:
+#      mongodb:
+#        username: admin
+#        database: prod_db
+#        password: 68hjhjIpPp462FES
+#        uri: mongodb://admin:68hjhjIpPp462FES@cluster0-shard-00-00-kbqjm.mongodb.net:27017,cluster0-shard-00-01-kbqjm.mongodb.net:27017,cluster0-shard-00-02-kbqjm.mongodb.net:27017/?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin
+
   spring:
     profile: prod
     data:
       mongodb:
+#        host: cluster0-shard-00-00-kbqjm.mongodb.net:27017,cluster0-shard-00-01-kbqjm.mongodb.net:27017,cluster0-shard-00-02-kbqjm.mongodb.net:27017
         username: admin
-        database: prod_db
+        database: test_db
         password: 68hjhjIpPp462FES
         uri: mongodb://admin:68hjhjIpPp462FES@cluster0-shard-00-00-kbqjm.mongodb.net:27017,cluster0-shard-00-01-kbqjm.mongodb.net:27017,cluster0-shard-00-02-kbqjm.mongodb.net:27017/?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin

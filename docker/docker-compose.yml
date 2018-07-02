@@ -3,7 +3,7 @@ discovery:
   ports:
     - "8761:8761"
   environment:
-    - "SPRING_PROFILES_ACTIVE=dev"
+    - "SPRING_PROFILES_ACTIVE=default,prod"
 testrecord:
   image: mobileenerlytics/spring-testrecord
   ports:
@@ -11,4 +11,20 @@ testrecord:
   links:
     - discovery
   environment:
-    - "SPRING_PROFILES_ACTIVE=dev"
+    - "SPRING_PROFILES_ACTIVE=default,prod"
+gateway:
+  image: mobileenerlytics/spring-gateway
+  ports:
+    - "8000:8000"
+  links:
+    - discovery
+    - testrecord
+  environment:
+    - "SPRING_PROFILES_ACTIVE=default,prod"
+frontend:
+  image: mobileenerlytics/spring-frontend
+  ports:
+    - "54321:54321"
+  links:
+    - discovery
+    - gateway

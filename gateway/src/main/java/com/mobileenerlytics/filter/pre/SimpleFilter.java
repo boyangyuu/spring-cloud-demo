@@ -51,7 +51,7 @@ public class SimpleFilter extends ZuulFilter {
 
     //todo add
     // parse the user name
-    boolean isPro = false;
+    boolean isPro = true;
     if (isPro) return null;
 
     // get the token
