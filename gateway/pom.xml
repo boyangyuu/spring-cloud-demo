@@ -77,6 +77,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -99,7 +103,7 @@
                 <configuration>
                     <serverId>docker.io</serverId>
                     <registryUrl>https://index.docker.io/v1/</registryUrl>
-                    <pushImage>true</pushImage>
+                    <pushImage>false</pushImage>
                     <imageName>mobileenerlytics/${project.artifactId}</imageName>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <resources>
