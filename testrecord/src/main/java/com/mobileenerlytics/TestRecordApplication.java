@@ -1,7 +1,10 @@
 package com.mobileenerlytics;
 
 
-import com.mobileenerlytics.entity.*;
+import com.mobileenerlytics.entity.Branch;
+import com.mobileenerlytics.entity.Commit;
+import com.mobileenerlytics.entity.Contributor;
+import com.mobileenerlytics.entity.Project;
 import com.mobileenerlytics.repository.*;
 import com.mobileenerlytics.util.DBOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,6 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @EnableEurekaClient
 @SpringBootApplication
@@ -83,26 +84,29 @@ public class TestRecordApplication implements CommandLineRunner {
             branchRepository.save(branch);
 //            commit.setJobStatus(Constants.COMMIT_STATUS_QUEUED);
         }
-        // input log, output record, mark commit as done
-        // testRecords todo , call post processing, get a testrecord
-        TestRecord record = testRecordRepository.findBy(testName, commit.getId());
-        if (record != null) throw new RuntimeException("testrecord is already exist" + "testName: " + testName + "commit of " + commit.getId());
-        Set<ThreadCompEnergy> threadCompEnergySet = new HashSet<>();
-        record = testRecordRepository.save(new TestRecord(testName, commit.getId(), threadCompEnergySet));
-        branch.addTest(record.getTestName());
-        commit.addTestRecord(record.getId());
         commitRepository.save(commit);
         branchRepository.save(branch);
 
+        // testrecord
+
+        // input log, output record, mark commit as done
+        // testRecords todo , call post processing, get a testrecord
+//        TestRecord record = testRecordRepository.findBy(testName, commit.getId());
+//        if (record != null) throw new RuntimeException("testrecord is already exist" + "testName: " + testName + "commit of " + commit.getId());
+//        Set<ThreadCompEnergy> threadCompEnergySet = new HashSet<>();
+//        record = testRecordRepository.save(new TestRecord(testName, commit.getId(), threadCompEnergySet));
+//        branch.addTest(record.getTestName());
+//        commit.addTestRecord(record.getId());
+
+
         // processing
-        if (1 == 1) return;
+//        if (1 == 1) return;
         File file = new File("/Users/boyang/Documents/work/spring-cloud-demo/testrecord/src/test/resources/eagle-2479786998251.zip");
         String pkgName = "com.tencent.qqmusic";
-
-
-        Runnable runnable = dbOperation.getUploadedTraceZipHandler(file, pkgName, "devicename", commit,
+        Runnable runnable = dbOperation.getUploadedTraceZipHandler(file, pkgName, "devicename", commit.getId(),
                 dbOperation);
-        runnable.run(); // todo is it ok?
+        runnable.run();
+        // todo is it ok?
 
         // todo call email alerting
 

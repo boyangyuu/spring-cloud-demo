@@ -10,7 +10,7 @@ import java.util.Set;
 @Document(collection = "Commit")
 public class Commit {
     @Id
-    private String id;
+    private ObjectId id;
 
     private String hash;
 
@@ -48,11 +48,11 @@ public class Commit {
         testRecords.add(testRecordId);
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

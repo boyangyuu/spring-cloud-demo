@@ -12,6 +12,6 @@
     data:
       mongodb:
         username:
-        database: beta_db
+        database: test_db
         password:
         uri: mongodb://localhost

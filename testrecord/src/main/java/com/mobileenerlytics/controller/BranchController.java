@@ -40,7 +40,7 @@ public class BranchController {
             @RequestParam(required=false, name="count") int count,
             @RequestParam(name="projectId") String projectId) {
         try {
-            if (prefix.equals("")) prefix = null;
+            if (prefix == null || prefix.equals("")) prefix = null;
             if (branchName == null && prefix == null) return queryAllBranches();
             if (prefix == null) return queryBranchByName(projectId, branchName, count);
             else return queryBranchByPrefix(projectId, prefix, count);
@@ -57,7 +57,10 @@ public class BranchController {
         MongoCollection<Document> collection = mongoDatabase.getCollection("Branch");
         BasicDBObject sort = new BasicDBObject("updatedMs", -1);
         collection.find().sort(sort).projection(Projections.exclude("commits")).into(documents);
-        for (Document doc : documents) doc.append("commits", new ArrayList<>());
+        for (Document doc : documents) {
+            doc.append("commits", new ArrayList<>());
+            doc.put("_id", ((ObjectId) doc.get("_id")).toHexString());
+        }
         return documents;
     }
 
@@ -93,10 +96,9 @@ public class BranchController {
             public void apply(final Document b) {
                 Set<String> testNamesOfBranch = new HashSet<>();
                 List<Document> objects = new ArrayList<>();
-                String id = b.getString("_id");
-                List<String> commitIds  = (List<String>) b.get("commits");
+                List<ObjectId> commitIds  = (List<ObjectId>) b.get("commits");
                 if (commitIds != null) {
-                    for (String cid : commitIds) {
+                    for (ObjectId cid : commitIds) {
                         Document document = queryCommitByCommitId(cid);
                         document.put("_id", ((ObjectId) document.get("_id")).toHexString());
                         if (document != null) objects.add(0, document);
@@ -115,9 +117,9 @@ public class BranchController {
         return branches;
     }
 
-    public Document queryCommitByCommitId(String commitId) {
+    public Document queryCommitByCommitId(ObjectId commitId) {
         MongoCollection<Document> collection = mongoDatabase.getCollection("Commit");
-        BasicDBObject query = new BasicDBObject("_id", new BasicDBObject("$eq", new ObjectId(commitId)));
+        BasicDBObject query = new BasicDBObject("_id", new BasicDBObject("$eq", commitId));
         Document document =  collection.aggregate(Arrays.asList(
                 Aggregates.match(query),
                 Aggregates.lookup("TestRecord", "testRecords", "_id", "testRecordSet"),

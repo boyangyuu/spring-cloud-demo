@@ -1,6 +1,7 @@
 package com.mobileenerlytics.entity;
 
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,7 +14,7 @@ public class TestRecord {
     @Id
     private int id;
 
-    private String commit_id;
+    private ObjectId commit_id;
 
     String testName;
 
@@ -27,7 +28,7 @@ public class TestRecord {
 
     private Map<String, Double> threadUnit = new HashMap<>();
 
-    public TestRecord(String testName, String commit_id, Set<ThreadCompEnergy> threadCompEnergies) {
+    public TestRecord(String testName, ObjectId commit_id, Set<ThreadCompEnergy> threadCompEnergies) {
         this.testName = testName;
         this.updatedMs = new Date();
         this.setEnergy(computeTheEnergy(threadCompEnergies));

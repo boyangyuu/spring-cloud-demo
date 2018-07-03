@@ -18,7 +18,7 @@ public class Branch {
     private ObjectId project_id;
     private Set<String> tests = new HashSet<>();
 
-    private List<String> commits = new ArrayList<>();
+    private List<ObjectId> commits = new ArrayList<>();
 
     public Branch(String branchName, ObjectId project_id) {
         this.branchName = branchName;
@@ -49,7 +49,7 @@ public class Branch {
         this.updatedMs = updatedMs;
     }
 
-    public List<String> getCommits() {
+    public List<ObjectId> getCommits() {
         return commits;
     }
 

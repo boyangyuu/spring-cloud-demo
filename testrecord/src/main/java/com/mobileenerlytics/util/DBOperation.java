@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mobileenerlytics.entity.Commit;
 import com.mobileenerlytics.entity.TestRecord;
 import com.mobileenerlytics.entity.ThreadCompEnergy;
 import com.mobileenerlytics.repository.TestRecordRepository;
@@ -14,19 +13,18 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DBOperation {
-    private static String dbDir;
-    private static Map<String, DBOperation> dbOperation = new HashMap<>();
-    private File persistentSummaryDb;
     private static Logger logger = LoggerFactory.getLogger(DBOperation.class);
     private static final String LOGNAME = "tester_logname";//??
 
@@ -59,10 +57,10 @@ public class DBOperation {
         }
     }
 
-    public TestRecord updateDbFromJson(File jsonFile, String pkgName, String deviceName, Commit commit, String testcaseName)
+    public TestRecord updateDbFromJson(File jsonFile, String pkgName, String deviceName, ObjectId commitId, String testcaseName)
             throws Exception {
         logger.info("updateDbFromJson:{} pkg:{} version:{} test:{}", jsonFile.getAbsolutePath(), pkgName,
-                commit.getHash(), testcaseName);
+                commitId, testcaseName);
         Set<ThreadCompEnergy> threadEnergies = new HashSet<>();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -92,15 +90,15 @@ public class DBOperation {
 
             for (JsonOutput jsonOutput : jsonOutputs) {
                 if (jsonOutput.taskId != pid && jsonOutput.parentTaskId != pid) continue;
-                threadEnergies.add(new ThreadCompEnergy(jsonOutput.taskName, "CPU", jsonOutput.perComponentEnergy.CPU, commit.getUpdatedMs()));
-                threadEnergies.add(new ThreadCompEnergy(jsonOutput.taskName, "GPU", jsonOutput.perComponentEnergy.GPU, commit.getUpdatedMs()));
+                threadEnergies.add(new ThreadCompEnergy(jsonOutput.taskName, "CPU", jsonOutput.perComponentEnergy.CPU, new Date()));
+                threadEnergies.add(new ThreadCompEnergy(jsonOutput.taskName, "GPU", jsonOutput.perComponentEnergy.GPU, new Date()));
             }
-            return addToDb(commit.getId(), testcaseName, threadEnergies);
+            return addToDb(commitId, testcaseName, threadEnergies);
         } catch (IOException e) {LOGGER.info("", e.getMessage());}
         return null;
     }
 
-    public TestRecord addToDb(String commitId, String testcaseName, Set<ThreadCompEnergy> threadEnergies){
+    public TestRecord addToDb(ObjectId commitId, String testcaseName, Set<ThreadCompEnergy> threadEnergies){
 
         //todo save record
         TestRecord testRecord = testRecordRepository.findBy(testcaseName, commitId);
@@ -109,26 +107,30 @@ public class DBOperation {
         } else {
             throw new RuntimeException("duplicate test record with commit id " + commitId);
         }
+
+        //todo , calling post-precessing api, get the testrecord, then save it in testRecordService
         testRecord = testRecordRepository.save(testRecord);
         return testRecord;
     }
 
-    public Runnable getUploadedTraceZipHandler(final File uploadedFile, final String pkgName, final String deviceName,
-                                               final Commit commit, final DBOperation dbOperation) {
+    public Runnable getUploadedTraceZipHandler(final File uploadedFile, final String pkgName, final String deviceName, ObjectId commitId
+                                               , final DBOperation dbOperation) {
+
         return new Runnable() {
             @Override
             public void run() {
                 Date proccessed = startProcessing();
-                unzipAndProcessEnergy();
-                endProcessing(proccessed);
+                TestRecord record = unzipAndProcessEnergy();
+                endProcessing(proccessed, record);
             }
 
             private Date startProcessing() {
                 Date proccessed = new Date();
                 Document oneAndUpdate = null;
                 try {
+
                     MongoCollection<Document> collection = database.getCollection("Commit");
-                    Document filter = new Document("_id", commit.getId());
+                    Document filter = new Document("_id", commitId);
                     oneAndUpdate = collection.findOneAndUpdate(
                             filter,
                             new BasicDBObject("$set", new BasicDBObject("jobStatus", Constants.COMMIT_STATUS_PROCESSING)),
@@ -140,14 +142,15 @@ public class DBOperation {
                 return proccessed;
             }
 
-            private void unzipAndProcessEnergy() {
+            private TestRecord unzipAndProcessEnergy() {
+                TestRecord testRecord = null;
                 String parentDir = uploadedFile.getParent();
                 String zipFileName = uploadedFile.getName();
                 int dotIndex = zipFileName.lastIndexOf(".zip");
                 String dirName = zipFileName.substring(0, dotIndex);
                 File unzipDir = new File(parentDir + File.separator + dirName);
-                unzipDir.mkdirs();
-                ZipUtil.unpack(uploadedFile, unzipDir);
+//                unzipDir.mkdirs();
+//                ZipUtil.unpack(uploadedFile, unzipDir);
 
                 // Find and process all trace folders
                 File[] traceDirs = unzipDir.listFiles();
@@ -180,29 +183,44 @@ public class DBOperation {
                         logger.info("Updating database from processed traces at " + traceDir.getAbsolutePath());
                         // update database from json output by eprof
                         File jsonFile = eprofOutDir.toPath().resolve("app.json").toFile();
-                        TestRecord testRecord = dbOperation.updateDbFromJson(jsonFile, pkgName, deviceName, commit, testcaseName);
+                        testRecord = dbOperation.updateDbFromJson(jsonFile, pkgName, deviceName, commitId, testcaseName);
+
+
                         logger.info("Uploading files to S3 " + eprofOutDir);
 
                         //todo
 //                        TestRecordService.uploadFolder("" + testRecord.getId(), eprofOutDir);
+
                     } catch (Exception e) {
                         logger.error("Failed to process " + traceDir.getAbsolutePath());
                         e.printStackTrace();
                     }
                 }
+                return testRecord;
             }
 
-            private void endProcessing(Date proccessed) {
+            private void endProcessing(Date proccessed, TestRecord testRecord) {
                 Document oneAndUpdate;
                 long duration = new Date().getTime() - proccessed.getTime();
                 try {
-                    MongoCollection<Document> collection = database.getCollection("Commit");
-                    Document filter = new Document("_id", commit.getId());
-                    oneAndUpdate = collection.findOneAndUpdate(
+                    // commit
+                    MongoCollection<Document> commitCollection = database.getCollection("Commit");
+                    Document filter = new Document("_id", commitId);
+                    oneAndUpdate = commitCollection.findOneAndUpdate(
                             filter,
-                            new BasicDBObject("$set", new BasicDBObject("jobStatus", Constants.COMMIT_STATUS_DONE).append("jobDurationMs", duration)),
+                            new BasicDBObject("$set", new BasicDBObject("jobStatus", Constants.COMMIT_STATUS_DONE).append("jobDurationMs", duration))
+                                    .append("$push", new BasicDBObject("testRecords", testRecord.getId())),
                             new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
                     );
+                    //branch
+                    MongoCollection<Document> branchCollection = database.getCollection("Branch");
+                    ObjectId branchId = (ObjectId) oneAndUpdate.get("branch_id");
+                    Document branch = branchCollection.findOneAndUpdate(
+                            new Document("_id", branchId),
+                            new BasicDBObject("$push", new BasicDBObject("tests", testRecord.getTestName())),
+                            new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER)
+                    );
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -210,20 +228,4 @@ public class DBOperation {
         };
     }
 
-    //todo why?
-    public static DBOperation getInstance(String user) throws IOException {
-        if (!dbOperation.containsKey(user)) {
-            logger.debug("db dir: " + dbDir);
-            //dbOperation.put(user, new DBOperation(userDbFile));
-            dbOperation.put(user, new DBOperation());
-        }
-        return dbOperation.get(user);
-    }
-
-    public static String getDbDir(File summaryDbFile) {
-        Path summaryPath = summaryDbFile.toPath().getParent();
-        File dbDir = summaryPath.resolve("user-summaries").toFile();
-        dbDir.mkdirs();
-        return dbDir.getAbsolutePath();
-    }
 }
