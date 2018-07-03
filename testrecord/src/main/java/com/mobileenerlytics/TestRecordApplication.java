@@ -95,7 +95,7 @@ public class TestRecordApplication implements CommandLineRunner {
         branchRepository.save(branch);
 
         // processing
-//        if (1 == 1) return;
+        if (1 == 1) return;
         File file = new File("/Users/boyang/Documents/work/spring-cloud-demo/testrecord/src/test/resources/eagle-2479786998251.zip");
         String pkgName = "com.tencent.qqmusic";
 

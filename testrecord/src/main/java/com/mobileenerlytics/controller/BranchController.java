@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @RestController
-@RequestMapping("api/branch")
+@RequestMapping("api/branches")
 public class BranchController {
     @Autowired
     private BranchRepository branchRepository;
@@ -40,6 +40,7 @@ public class BranchController {
             @RequestParam(required=false, name="count") int count,
             @RequestParam(name="projectId") String projectId) {
         try {
+            if (prefix.equals("")) prefix = null;
             if (branchName == null && prefix == null) return queryAllBranches();
             if (prefix == null) return queryBranchByName(projectId, branchName, count);
             else return queryBranchByPrefix(projectId, prefix, count);

@@ -6,7 +6,9 @@ import com.mongodb.Block;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.*;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -40,7 +42,7 @@ public class CommitController {
     public ResponseEntity getCommits(
             @RequestParam(name="count") int count,
             @RequestParam(required=false, name="branchName") String branchName,
-            @RequestParam(required=false, name="middleUpdatedMS") long middleUpdatedMS,
+            @RequestParam(required=false, name="middleUpdatedMS", defaultValue="0" ) long middleUpdatedMS,
             @RequestParam(name="projectId") String projectId) throws Exception {
         final List<Document> result = new ArrayList<>();
         Document query = new Document();

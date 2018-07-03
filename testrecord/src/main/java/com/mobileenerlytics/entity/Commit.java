@@ -1,5 +1,6 @@
 package com.mobileenerlytics.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
@@ -17,11 +18,11 @@ public class Commit {
 
     private String contributor_email;
 
-    private String branch_id;
+    private ObjectId branch_id;
 
     private String branchName;
 
-    private String project_id;
+    private ObjectId project_id;
 
     private Date updatedMs;
 
@@ -79,11 +80,11 @@ public class Commit {
         this.contributor_email = contributor_email;
     }
 
-    public String getBranch_id() {
+    public ObjectId getBranch_id() {
         return branch_id;
     }
 
-    public void setBranch_id(String branch_id) {
+    public void setBranch_id(ObjectId branch_id) {
         this.branch_id = branch_id;
     }
 
@@ -95,11 +96,11 @@ public class Commit {
         this.branchName = branchName;
     }
 
-    public String getProject_id() {
+    public ObjectId getProject_id() {
         return project_id;
     }
 
-    public void setProject_id(String project_id) {
+    public void setProject_id(ObjectId project_id) {
         this.project_id = project_id;
     }
 

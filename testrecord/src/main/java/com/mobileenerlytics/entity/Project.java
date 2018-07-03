@@ -3,11 +3,6 @@ package com.mobileenerlytics.entity;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 //todo api doc : https://spring.io/guides/gs/testing-restdocs/
@@ -22,7 +17,7 @@ public class Project {
     // todo 迁移 dev_db to dev_db1, re build String to objectID.
     // todo , query, for (commit) {// find change project; find change branch new cid, pid; find change test new cid }
     // https://stackoverflow.com/questions/48291819/change-mongodb-id-from-string-to-objectid
-    private String _id;
+    private ObjectId _id;
 
     private String name;
 
@@ -48,12 +43,12 @@ public class Project {
 
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return _id;
     }
 
     public void setId(ObjectId id) {
-        this._id = id.toString();
+        this._id = id;
     }
 
     public String getName() {
