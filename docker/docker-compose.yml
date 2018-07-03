@@ -28,3 +28,7 @@ frontend:
   links:
     - discovery
     - gateway
+
+
+#readme
+#    docker compose up:

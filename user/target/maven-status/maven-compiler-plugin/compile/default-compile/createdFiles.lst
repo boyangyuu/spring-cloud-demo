@@ -8,4 +8,5 @@ com/mobileenerlytics/config/Mongodb.class
 com/mobileenerlytics/config/Beans.class
 com/mobileenerlytics/repository/UserRepository.class
 com/mobileenerlytics/entity/User.class
+com/mobileenerlytics/UserApplication.class
 com/mobileenerlytics/service/AuthService.class

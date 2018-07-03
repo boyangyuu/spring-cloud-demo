@@ -39,11 +39,6 @@ public class BranchController {
             @RequestParam(required=false, name="branchName") String branchName,
             @RequestParam(required=false, name="count") int count,
             @RequestParam(name="projectId") String projectId) {
-        //todo
-//        if (projectId == null) throw new RuntimeException(Response
-//                .status(Response.Status.FORBIDDEN)
-//                .entity(MSG_FORBIDDEN)
-//                .build());
         try {
             if (branchName == null && prefix == null) return queryAllBranches();
             if (prefix == null) return queryBranchByName(projectId, branchName, count);
@@ -51,11 +46,7 @@ public class BranchController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            //todo
-//            throw new NotFoundEntityException(Response
-//                    .status(Response.Status.NOT_FOUND)
-//                    .entity(MSG_BRANCH_NOT_FOUND)
-//                    .build());
+
             return null;
         }
     }
@@ -106,6 +97,7 @@ public class BranchController {
                 if (commitIds != null) {
                     for (String cid : commitIds) {
                         Document document = queryCommitByCommitId(cid);
+                        document.put("_id", ((ObjectId) document.get("_id")).toHexString());
                         if (document != null) objects.add(0, document);
 
                         // keep it
@@ -115,6 +107,7 @@ public class BranchController {
                 b.remove("commits");
                 b.append("commits", objects);
                 b.append("testsFiltered", testNamesOfBranch);
+                b.put("_id", ((ObjectId) b.get("_id")).toHexString());
                 branches.add(b);
             }
         });

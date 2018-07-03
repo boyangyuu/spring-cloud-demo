@@ -1,8 +1,7 @@
 package com.mobileenerlytics.util;
 
-//import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mobileenerlytics.entity.Commit;
@@ -38,12 +37,23 @@ public class DBOperation {
     private TestRecordRepository testRecordRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DBOperation.class);
-    class JsonOutput {
+
+
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    static class JsonOutput {
         String taskName;
         int taskId;
+        boolean mIsProc;
         int parentTaskId;
         PerComponentEnergy perComponentEnergy = new PerComponentEnergy();
+
+        @JsonCreator
+        public JsonOutput() {}
+
+        @JsonIgnoreProperties(ignoreUnknown=true)
         class PerComponentEnergy {
+            @JsonCreator
+            public PerComponentEnergy(){}
             double CPU;
             double GPU;
         }
@@ -51,14 +61,15 @@ public class DBOperation {
 
     public TestRecord updateDbFromJson(File jsonFile, String pkgName, String deviceName, Commit commit, String testcaseName)
             throws Exception {
-        logger.debug("updateDbFromJson:{} pkg:{} version:{} test:{}", jsonFile.getAbsolutePath(), pkgName,
+        logger.info("updateDbFromJson:{} pkg:{} version:{} test:{}", jsonFile.getAbsolutePath(), pkgName,
                 commit.getHash(), testcaseName);
         Set<ThreadCompEnergy> threadEnergies = new HashSet<>();
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<List<JsonOutput>> mapType = new TypeReference<List<JsonOutput>>() {};
-        InputStream is = TypeReference.class.getResourceAsStream(jsonFile.getAbsolutePath());
+        InputStream is = new FileInputStream(jsonFile.getAbsolutePath());
         try {
+
             List<JsonOutput> jsonOutputs = mapper.readValue(is, mapType);
             System.out.println("States list saved successfully");
             JsonOutput jsonPhone = jsonOutputs.get(0);

@@ -16,11 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 @RestController
-@RequestMapping("api/project")
+@RequestMapping("api/projects")
 // todo https://spring.io/guides/gs/rest-service/
 public class ProjectController {
     @Autowired
@@ -38,10 +38,19 @@ public class ProjectController {
     public ResponseEntity getProjects(@RequestHeader HttpHeaders headers) {
 //        List<String> username = headers.get("username");
         String userName = "Allmusicapps_3Mins";
-        List<Project> projects = projectRepository.findBy(userName);
-        if (projects == null || projects.isEmpty()) return ResponseEntity.noContent().build();
-        else return ResponseEntity.ok(projects);
+        MongoCollection<Document> collection = mongoDatabase.getCollection("Project");
+        Document filter = new Document("userId", userName);
+        List<Document> documents = collection.find(filter).map(document -> {
+            ObjectId id = (ObjectId) document.get("_id");
+            document.put("_id", id.toHexString());
+            return document;
+        }).into(new ArrayList<Document>());
 
+        if (documents == null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(documents);
+        }
     }
 
     @GetMapping(value="/{id}")

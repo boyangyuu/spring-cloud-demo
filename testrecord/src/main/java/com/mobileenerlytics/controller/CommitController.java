@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/commit")
+@RequestMapping("api/commits")
 public class CommitController {
     @Autowired
     private CommitRepository commitRepository;

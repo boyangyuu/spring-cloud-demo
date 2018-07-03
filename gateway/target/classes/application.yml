@@ -6,10 +6,6 @@ spring:
   application:
     name: microservice-gateway-zuul
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
 zuul:
   ignoredServices: "*"
   routes:
@@ -18,15 +14,19 @@ zuul:
       serviceId: microservice-provider-user
       stripPrefix: false
     branch:
-      path: /api/branch/**
+      path: /api/branches/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
     commit:
-      path: /api/commit/**
+      path: /api/commits/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
     project:
-      path: /api/project/**
+      path: /api/projects/**
+      serviceId: microservice-provider-testrecord
+      stripPrefix: false
+    testrecords:
+      path: /api/testrecords/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
 

@@ -14,15 +14,15 @@ zuul:
       serviceId: microservice-provider-user
       stripPrefix: false
     branch:
-      path: /api/branch/**
+      path: /api/branches/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
     commit:
-      path: /api/commit/**
+      path: /api/commits/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
     project:
-      path: /api/project/**
+      path: /api/projects/**
       serviceId: microservice-provider-testrecord
       stripPrefix: false
     testrecords:
